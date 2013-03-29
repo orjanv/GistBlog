@@ -1,6 +1,6 @@
 #!/usr/bin/env python
  
-import json, urllib2, requests
+import json, urllib2, requests, os
 
 #token = "9d70babadc9e7aab450163154f322cae2ab43305"
 #token = " "
@@ -8,6 +8,7 @@ import json, urllib2, requests
 choice = 0
 app_name = 'Gist blog CLI app'
 key = ".mytoken.key"
+os.chdir('/home/orjanv/gistblog')
 
 def WriteTokenToFile(token):
 	# Write token to file
@@ -68,10 +69,16 @@ def ReadGist():
 
 def PostGist():
 
+	with open('post.md', 'r') as f:
+		input3 = f.read().replace('\n', '')
+		
+	print "\nBlogfile read\n"
+	print "".join(input3)
+		
 	input1 = raw_input("Gist Title: ")
 	input2 = raw_input("Gist Ingress: ")
-	input3 = raw_input("Gist Content: ")
-			
+	#input3 = raw_input("Gist Content: ")
+
 	gist = {"description": input2, "public": "true", "files": {input1: {"content": input3}}}
 	json_data = json.dumps(gist)
 
@@ -80,6 +87,7 @@ def PostGist():
 	result = urllib2.urlopen(req, json_data)
 
 	print "\nGist posted"
+	f.close()
 
 def GistBlogMenu():
 	loop = 1
