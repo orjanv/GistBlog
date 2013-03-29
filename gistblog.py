@@ -70,10 +70,10 @@ def ReadGist():
 def PostGist():
 
 	with open('post.md', 'r') as f:
-		input3 = f.read().replace('\n', '')
+		input3 = f.read()
 		
 	print "\nBlogfile read\n"
-	print "".join(input3)
+	#print "".join(input3)
 		
 	input1 = raw_input("Gist Title: ")
 	input2 = raw_input("Gist Ingress: ")
