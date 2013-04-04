@@ -7,6 +7,7 @@ from base64 import encodestring
 GITHUB_API = 'https://api.github.com'
 os.chdir('/home/orjanv/gistblog')
 KEY = ".mytoken.key"
+APP_NAME = 'Gist blog CLI app'
 
 def WriteTokenToFile(token):
 	# Write token to file
@@ -40,7 +41,6 @@ def ReadTokenFromFile(token):
 
 def GetToken(token):
 	# User Input
-	app_name = 'Gist blog CLI app'
 	username = raw_input('Github username: ')
 	password = getpass.getpass('Github password: ')
 	url = urljoin(GITHUB_API, 'authorizations')
