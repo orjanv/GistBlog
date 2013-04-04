@@ -2,9 +2,6 @@
  
 import json, urllib2, requests, os
 
-#token = "9d70babadc9e7aab450163154f322cae2ab43305"
-#token = " "
-
 choice = 0
 app_name = 'Gist blog CLI app'
 key = ".mytoken.key"
