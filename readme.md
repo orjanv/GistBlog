@@ -18,3 +18,12 @@ I will look at a better way of handeling different files etc later.
 2. You also want to change the App Name:
 
 		APP_NAME = 'Gist blog CLI app'
+
+### Features to come
+
+Planned improvements:
+
+* Download all gists
+* Download one gist and edit it
+* Use an editor inline to write a draft
+* Publish a saved draft

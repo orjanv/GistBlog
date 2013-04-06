@@ -6,14 +6,19 @@ from base64 import encodestring
 
 GITHUB_API = 'https://api.github.com'
 os.chdir('/home/orjanv/gistblog')
-KEY = ".mytoken.key"
+KEY = '.mytoken.key'
 APP_NAME = 'Gist blog CLI app'
 
 def WriteTokenToFile(token):
-	# Write token to file
-	f = open(KEY, 'w')
-	f.write(token)
-	f.close()
+	try:
+		with open(KEY, 'w+'):
+			# Write token to file
+			f = open(KEY, 'w+')
+			f.write(token + "\n")
+			print "Wrote token:",token, "to file:", KEY
+			f.close()
+	except IOError:
+		print "File error: could not write to file:", KEY
 
 def ReadTokenFromFile(token):
 	try:
@@ -25,6 +30,7 @@ def ReadTokenFromFile(token):
 			f.close()
 			
 			# Test if token in file matches token online
+			tokenOnline = ''
 			tokenOnline = GetToken(token)
 			if tokenOnline == token:
 				print "Used token from file"
@@ -32,11 +38,14 @@ def ReadTokenFromFile(token):
 			elif token != tokenOnline:
 				token = tokenOnline
 				print "Local token does not match token from GitHub, using that insted"
+				WriteTokenToFile(token)
 				return token
 	# Catch file errors
 	except IOError:
+		print "File error: grabbing token from GitHub instead"
+		tokenOnline = GetToken(token)
 		token = tokenOnline
-		print "File error, grabbed token from GitHub"
+		WriteTokenToFile(token)
 		return token
 
 def GetToken(token):
@@ -53,13 +62,14 @@ def GetToken(token):
 		data = json.load(urllib2.urlopen(req))
 	except urllib2.URLError, e:
 		print "Something broke connecting to Github: %s" % e
-		return None
+		quit()
+		#return None
 
 	#print data
 	for auth in data:
-		if auth['note'] == app_name and 'gist' in auth['scopes']:
-			#print "Retrieving existing token"
-			WriteTokenToFile(token)
+		if auth['note'] == APP_NAME and 'gist' in auth['scopes']:
+			#print "Retrieving existing token:", auth['token']
+			#WriteTokenToFile(auth['token'])
 			return auth['token']
 
 def ReadGist(token):
@@ -71,6 +81,7 @@ def ReadGist(token):
 	#print data
 	for d in data:
 		print d[u'description']
+		print "." * 10
 
 def PostGist():
 
@@ -94,7 +105,6 @@ def PostGist():
 def main():
 	token = ''
 	token = ReadTokenFromFile(token)
-	print token
 	choice = 0
 	loop = 1
 	while loop == 1:
