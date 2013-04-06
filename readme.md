@@ -27,3 +27,4 @@ Planned improvements:
 * Download one gist and edit it
 * Use an editor inline to write a draft
 * Publish a saved draft
+* When publishing, use filename as title for gist post

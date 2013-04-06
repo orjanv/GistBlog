@@ -17,6 +17,7 @@ def WriteTokenToFile(token):
 			f.write(token + "\n")
 			print "Wrote token:",token, "to file:", KEY
 			f.close()
+	# Catch file errors
 	except IOError:
 		print "File error: could not write to file:", KEY
 
@@ -63,13 +64,10 @@ def GetToken(token):
 	except urllib2.URLError, e:
 		print "Something broke connecting to Github: %s" % e
 		quit()
-		#return None
 
 	#print data
 	for auth in data:
 		if auth['note'] == APP_NAME and 'gist' in auth['scopes']:
-			#print "Retrieving existing token:", auth['token']
-			#WriteTokenToFile(auth['token'])
 			return auth['token']
 
 def ReadGist(token):
