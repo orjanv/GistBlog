@@ -90,7 +90,6 @@ def PostGist():
 		input3 = f.read()
 	f.close()
 
-	# use filename later as title and first line as ingress
 	input1 = raw_input("Gist Title: ")
 	input2 = raw_input("Gist Ingress: ") 
 
