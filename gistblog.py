@@ -1,13 +1,15 @@
 #!/usr/bin/env python
- 
+
 import json, urllib2, os, getpass
 from urlparse import urljoin
 from base64 import encodestring
 
+# Setting some global variables
 GITHUB_API = 'https://api.github.com'
-os.chdir('/home/orjanv/gistblog')
+PATH = '/home/orjanv/gistblog'
 KEY = '.mytoken.key'
 APP_NAME = 'Gist blog CLI app'
+DEBUG = '0'
 
 def WriteTokenToFile(token):
 	try:
@@ -30,17 +32,20 @@ def ReadTokenFromFile(token):
 				token = line.strip()
 			f.close()
 			
-			# Test if token in file matches token online
-			tokenOnline = ''
-			tokenOnline = GetToken(token)
-			if tokenOnline == token:
-				print "Used token from file"
-				return token
-			elif token != tokenOnline:
-				token = tokenOnline
-				print "Local token does not match token from GitHub, using that insted"
-				WriteTokenToFile(token)
-				return token
+			if DEBUG == '0':
+				# Test if token in file matches token online
+				tokenOnline = ''
+				tokenOnline = GetToken(token)
+				if tokenOnline == token:
+					print "Used token from file"
+					return token
+				elif token != tokenOnline:
+					token = tokenOnline
+					print "Local token does not match token from GitHub, using that insted"
+					WriteTokenToFile(token)
+					return token
+			return token
+			
 	# Catch file errors
 	except IOError:
 		print "File error: grabbing token from GitHub instead"
@@ -70,18 +75,26 @@ def GetToken(token):
 		if auth['note'] == APP_NAME and 'gist' in auth['scopes']:
 			return auth['token']
 
-def ReadGist(token):
+def ListGists(token):
 	url = urljoin(GITHUB_API, 'users/orjanv/gists')
 	req = urllib2.Request(url)
 	req.add_header('Authorization', 'token ' + token)
 	data = json.load(urllib2.urlopen(req))
 
-	#print data
+	posts = []
+	print "ID        TITLE"
+	print "*" * 15
 	for d in data:
-		print d[u'description']
-		print "." * 10
+		postID = d[u'id']
+		for title in d[u'files']:
+			print d[u'id'], "-",title
+			posts.append(d[u'id'])
 
-def PostGist():
+	print "\nOldest post is:",min(posts)
+	print "Newest post is:",max(posts)
+	print "Number of posts is:",len(posts)
+	
+def PostGist(token):
 
 	# read content from blogpostfile
 	with open('post.md', 'r') as f:
@@ -99,24 +112,55 @@ def PostGist():
 	result = urllib2.urlopen(req, json.dumps(gist))
 	print "\nGist posted"
 
+def DownloadGist(token):
+	# Show files and make dict with them, letting you 
+	# choose one to download, by choose the dict number
+	ListGists(token)
+	
+	# Choose a file to download
+	myID = raw_input("Choose an ID to download: )
+		
+	
+	# Check if file already is downloaded
+	
+	# Write to local file
+	return None
+
+def ClearScreen():
+	os.system('cls' if os.name=='nt' else 'clear')
+
 def main():
+	ClearScreen()
+	try:
+		os.chdir(PATH)
+	# Catch file errors
+	except OSError:
+		print "File error: could not open directory, creating it instead"
+		os.mkdir(PATH, 0755)
+		os.chdir(PATH)
+		
 	token = ''
 	token = ReadTokenFromFile(token)
 	choice = 0
 	loop = 1
 	while loop == 1:
 		print " "
-		print "Gist blog menu"
-		print " "
-		print "1: Add a gist post"
-		print "2: Get all gist posts"
-		print "3: Quit"
-		choice = input("Choose from the menu: ")
-		if choice == 1:
-			PostGist()
-		elif choice == 2:
-			ReadGist(token)
-		elif choice == 3:
+		print APP_NAME,"\n"
+		print "   A: Add a gist post"
+		print "   G: Get all gist posts"
+		print "   D: Download a gist"
+		print "   Q: Quit\n"
+		choice = raw_input("Choose from the menu: ")
+		if choice == 'A' or choice == 'a':
+			ClearScreen()
+			PostGist(token)
+		elif choice == 'G' or choice == 'g':
+			ClearScreen()
+			ListGists(token)
+		elif choice == 'D' or choice == 'd':
+			ClearScreen()
+			DownloadGist(token)
+		elif choice == 'Q' or choice == 'q':
 			loop = 0
 
 if __name__ == '__main__':
