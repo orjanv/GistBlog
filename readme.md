@@ -11,9 +11,9 @@ The program read markdown text from a file, "post.md" and posts the content from
 
 I will look at a better way of handeling different files etc later.
 
-1. Remember to change file location at the beginning of the file, just after the import:
+1. Remember to path at the beginning of the file, just after the import:
 
-		os.chdir('/home/orjanv/gistblog')
+		PATH = '/home/orjanv/gistblog'
 
 2. You also want to change the App Name:
 

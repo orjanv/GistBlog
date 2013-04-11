@@ -9,7 +9,7 @@ GITHUB_API = 'https://api.github.com'
 PATH = '/home/orjanv/gistblog'
 KEY = '.mytoken.key'
 APP_NAME = 'Gist blog CLI app'
-DEBUG = '0'
+DEBUG = '1'
 
 def WriteTokenToFile(token):
 	try:
@@ -115,11 +115,33 @@ def PostGist(token):
 def DownloadGist(token):
 	# Show files and make dict with them, letting you 
 	# choose one to download, by choose the dict number
-	ListGists(token)
+	url = urljoin(GITHUB_API, 'users/orjanv/gists')
+	req = urllib2.Request(url)
+	req.add_header('Authorization', 'token ' + token)
+	data = json.load(urllib2.urlopen(req))
+
+	posts = []
+	print "ID        TITLE"
+	print "*" * 15
+	for d in data:
+		postID = d[u'id']
+		for title in d[u'files']:
+			print d[u'id'], "-",title
+			posts.append(d[u'id'])
 	
 	# Choose a file to download
-	myID = raw_input("Choose an ID to download: )
-		
+	myID = raw_input('\nChoose an ID to download: ')
+
+	# Grab content from chosen ID, NOT DONE!
+	url = urljoin(GITHUB_API, 'gists/:', myID)
+	req = urllib2.Request(url)
+	req.get_method = lambda: 'PATCH'
+	req.add_header('Authorization', 'token ' + token)
+	data = json.load(urllib2.urlopen(req))
+
+	for d in data:
+		for content in d[u'files']:
+			print content
 	
 	# Check if file already is downloaded
 	
