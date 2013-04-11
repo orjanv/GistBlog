@@ -9,7 +9,7 @@ GITHUB_API = 'https://api.github.com'
 PATH = '/home/orjanv/gistblog'
 KEY = '.mytoken.key'
 APP_NAME = 'Gist blog CLI app'
-DEBUG = '1'
+DEBUG = '0'
 
 def WriteTokenToFile(token):
 	try:
